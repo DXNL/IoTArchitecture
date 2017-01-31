@@ -181,7 +181,7 @@ The problem for Beijer as described above is to come to a technical and economic
 ###Setting the scene in numbers (Sander) ###
 In order to set the scene on how much data will be ingest and processed by the solution this paragraph will define the number. In the Figure 0, the numbers that are set by Beijer are given. These are the number that the solution needs to process once the solution is fully deployed. However it is still required that the solution needs to scale to larger number in the future.
 
-![Figure 0: Constants](https://github.com/svandenhoven/IoTArchitecture/blob/master/images/Constants.PNG)
+![Figure 0: Constants](https://github.com/DXNL/IoTArchitecture/blob/master/images/Constants.PNG)
 
 The data need to be gathered from 50000 cars for every second. We do the test only for a number signal/messages in order to test the signal with many small messages and less larger messages. We start with 1 signal value per message.
 Because not all cars will drive every moment the number of cars that is driving and producing data is set to 15% (occupation) on average and 33% in peak moments. We assume that about 6 hours per day the peak level occurs. 
@@ -189,7 +189,7 @@ We also define the number of signal values that need to be retrieved per second.
 
 With the input as described above this will lead to a number of messages and bytes that need to get ingested by the solution as described in Figure 1.
 
-![Figure 1: Numbers](https://github.com/svandenhoven/IoTArchitecture/blob/master/images/Numbers.PNG)
+![Figure 1: Numbers](https://github.com/DXNL/IoTArchitecture/blob/master/images/Numbers.PNG)
 
 Per month this will lead to considerable load and storage (estimated 14TB). In this document we will describe what solutions were tested, if they succeed and what the expected cost is. 
 
@@ -231,17 +231,17 @@ This call will result in a JSON payload that return the values for signal 191:
     
 
 The VIBEX interface is described in detail in the VIBEX manual:
-[https://github.com/svandenhoven/IoTArchitecture/blob/master/VIBEX-002%20-%20API%20Design%20v1.3.pdf](https://github.com/svandenhoven/IoTArchitecture/blob/master/VIBEX-002%20-%20API%20Design%20v1.3.pdf "ViBeX 1.3 Manual")
+[https://github.com/DXNL/IoTArchitecture/blob/master/VIBEX-002%20-%20API%20Design%20v1.3.pdf](https://github.com/DXNL/IoTArchitecture/blob/master/VIBEX-002%20-%20API%20Design%20v1.3.pdf "ViBeX 1.3 Manual")
 
 Each customer will have a Vibex Endpoint which can be called to retrieve the data from cars. Once the data is retrieved it need to be stored and analyzed in Azure. The architecture is shown in the overall architecture that is shown in figure 2.
 
-![Figure 2: Overall Architecture Pull Solution](https://github.com/svandenhoven/IoTArchitecture/blob/master/images/OverallPullArchitecture.png)
+![Figure 2: Overall Architecture Pull Solution](https://github.com/DXNL/IoTArchitecture/blob/master/images/OverallPullArchitecture.png)
 
 Every car / vehicle has a device to capture the car data via the CanBus. This data is sent to each customer (fleet owner). They store in they own data store and perform their local business processes on it. The data is exposed via a secure ViBeX REST API. In the Beijer Solution in Azure a solution runs that pulls this data into Azure.
 
 In order to be able to pull all data from all customers it is required that a solution is build that can handle the required throughput. In order to this the solution will have the following components as described in figure 3.
 
-![Figure 3: Pull Solution Components](https://github.com/svandenhoven/IoTArchitecture/blob/master/images/PullComponents.png)
+![Figure 3: Pull Solution Components](https://github.com/DXNL/IoTArchitecture/blob/master/images/PullComponents.png)
 
 
 - Job Scheduler: 
@@ -268,7 +268,7 @@ In order to be able to pull all data from all customers it is required that a so
 **The Push Scenario**
 The Push Scenario is much simpler than the push scenario as is also tested in this HackFest. It will require a change in architecture, but the promises of a simpler architecture as such large that Beijer architects has taken it into account as an alternative for the current ViBeX API. The architecture for the Push Scenario is show in Figure 4.
 
-![Figure 4: Push Solution Components](https://github.com/svandenhoven/IoTArchitecture/blob/master/images/PushComponents.png)
+![Figure 4: Push Solution Components](https://github.com/DXNL/IoTArchitecture/blob/master/images/PushComponents.png)
 
 The customer has instead of the an deployment of the ViBeX Pull Api an alternative with an deployment of a ViBex Push Service. This ViBeX Push Service will directly sent car data to the Data Retriever (same as described in Pull Scenario). This Data Retriever will service has hub for the data and consequently sent it to storage and the Data Processor. The Data Processor will create alerts that will be sent to Beijer's Clients
 
@@ -290,13 +290,13 @@ For these requirements to be satisfied we added one of the core Azure IoT Servic
 
 When a fleet of devices is directly connected to the Vetuda back-end it also places the responsibility of device management in that domain. Luckily IoT Hub device management has multiple features that accelerate implementing this responsbility into the solution. Microsoft's approach here is to provide APIs on top of the IoT Hub services to either integrate with or build a custom asset management solution. As devices go through a life-cycle of provisioning, configuring, updating and eventually decommisioning there are quite a few things that need to be implemented or integrated before that cycle is complete. For the hackfest the focus was on the feature set that directly could be applied to the Vetuda case and the first step to leveraging the benefits of this service.
 
-![ScreenShot 4.0: IoT Hub Architectural positioning](https://github.com/svandenhoven/IoTArchitecture/blob/master/images/BeijerIoTHubArch.png)
+![ScreenShot 4.0: IoT Hub Architectural positioning](https://github.com/DXNL/IoTArchitecture/blob/master/images/BeijerIoTHubArch.png)
 
 Under the hood IoT Hub is based on Azure Event Hubs and on the consumer side (reading the data from the buffer) the developer experience is identical. The main differences are on service and device registry end of IoT Hub where there are several endpoints for specific tasks like managing devices and their state.
 
 For the hackfest we looked at the specific application for IoT Hub and noted the fact that for Vetuda device identity actually was an issue in that data should never be tracable to its source, which sounds like the opposite of that IoT Hub tries to offer. On the other hand, one of the more advanced and differentiating scenarios is where Vetuda would be able to query and communicate back to vehicles in a way that the the system would target vehicles in a specific geographical area (geo-fenced). The approach we chose was to use device twins and let vehicles update their GPS data in device twin properties.
 
-![ScreenShot 4.1: IoT Hub Device Twins](https://github.com/svandenhoven/IoTArchitecture/blob/master/images/BeijerIoTDeviceTwins.png)
+![ScreenShot 4.1: IoT Hub Device Twins](https://github.com/DXNL/IoTArchitecture/blob/master/images/BeijerIoTDeviceTwins.png)
 
 The Device Twin properties could look like the following:
 '''
@@ -338,7 +338,7 @@ The query detects vehicles in a geo-fenced region and based on the result a coup
 
 To confirm with the requirement that vehicle data should not be tracable to its owner or driver all de registry data could be stored anonymously where IoT Hub know how to query or send a message to a specific vehicle but there is no meta-data available to trace any other entity related to that vehicle. GPS locations are tricky in this regard as one could trace a work or home address and still find out who was driving. A solution to this problem could be to rasterize the GPS data to a lower resolution (offering less accuracy in querying vehicle positioning) or only storing region identifiers that have no queriable GPS properties.
 
-![ScreenShot 4.2: Applying a geographical raster for device querying](https://github.com/svandenhoven/IoTArchitecture/blob/master/images/BeijerIoTHubRaster.png)
+![ScreenShot 4.2: Applying a geographical raster for device querying](https://github.com/DXNL/IoTArchitecture/blob/master/images/BeijerIoTHubRaster.png)
 
 There are multiple options for sending messages back to vehicles using IoT Hub:
 
@@ -361,7 +361,7 @@ C2D messages
 
 A new feature, recently added to IoT Hub, offers the opportunity to filter incoming messages and reroute them to external endpoint as they enter the IoT Hub ingest endpoint. This can be interesting for setting up an alerting scenario where certain message values (properties) can be routed to an andpoint that translated incoming messages into notifications to mobile phones or trigger that communicate back to vehicles or other services using f.e. a web hook.
 
-![ScreenShot 4.3: Routing messages from within IoT Hub](https://github.com/svandenhoven/IoTArchitecture/blob/master/images/BeijerIoTHubRoutes.png)
+![ScreenShot 4.3: Routing messages from within IoT Hub](https://github.com/DXNL/IoTArchitecture/blob/master/images/BeijerIoTHubRoutes.png)
 
 The way we chose to implement this was to use Azure Service Bus as the external endpoint and filter the warning light state so that engaged warning lights could result in a very quick response on the backend. Azure Service Bus additionally offers topics on top of queues where multiple parties, or system, could subscribe to event coming from the filtered stream of events.
 
@@ -743,11 +743,11 @@ Technical Execution
 
 When we had created the code for all the scenario's we have executed the code and the most important finding can be seen in the cost section. We had created a powerbi dashboard on top of the Stream Analistics to see how many signal were sent to the Event Hub. In all scenario's were were able to get to 3 around 3 million events. See screenshot 1 from our PowerBI.
 
-![ScreenShot 1: 3 Million Signals in 5 minutes](https://github.com/svandenhoven/IoTArchitecture/blob/master/images/Screenshot1.png)
+![ScreenShot 1: 3 Million Signals in 5 minutes](https://github.com/DXNL/IoTArchitecture/blob/master/images/Screenshot1.png)
 
 In the execution the eventhub was hit quite hard and we had to do some configuration on the number of Throughput Units for the EventHub to accomodate the throughput. This resulted in high througput in our eventhub as can be see in screenshot 2.
 
-![ScreenShot 2: Busy Eventhub](https://github.com/svandenhoven/IoTArchitecture/blob/master/images/EventHubMetrics.png)
+![ScreenShot 2: Busy Eventhub](https://github.com/DXNL/IoTArchitecture/blob/master/images/EventHubMetrics.png)
 
 
 Cost
@@ -783,15 +783,15 @@ This section describes the cost of the different scenarios. The cost will be def
 
 In order to define the cost for Azure Function we have done a test with the software described in section "Pull Scenario using Azure Function". We haven taken some constants to do the cost calculation as can be seen in Figure 5. More detail on the cost can be found in the Azure Pricing Calculator on https://azure.microsoft.com/en-us/pricing/calculator. We assume that the azure functions need the max memory of 1536 MB.
 
-![Figure 5: Azure Function Durations](https://github.com/svandenhoven/IoTArchitecture/blob/master/images/AzureFunctionConstants.PNG)
+![Figure 5: Azure Function Durations](https://github.com/DXNL/IoTArchitecture/blob/master/images/AzureFunctionConstants.PNG)
 
 We have done mutiple run to find the average throughput. We have done tests with 1000, 2500, 5000,7500 and 50000 signals in one job. For the system it does not matter if this are signals from 1 car, from mutiple cars or a combination. Figure 6 shows the average execution time.
 
-![Figure 6: Azure Function Durations](https://github.com/svandenhoven/IoTArchitecture/blob/master/images/AzureFunctionDuration.PNG)
+![Figure 6: Azure Function Durations](https://github.com/DXNL/IoTArchitecture/blob/master/images/AzureFunctionDuration.PNG)
 
 In Figure 7 a graphical representation of this table is given:
 
-![Figure 7: Azure Function Duration Graph](https://github.com/svandenhoven/IoTArchitecture/blob/master/images/AzureFunctionDurationGrap.PNG)
+![Figure 7: Azure Function Duration Graph](https://github.com/DXNL/IoTArchitecture/blob/master/images/AzureFunctionDurationGrap.PNG)
 
 
 We have done an extrapolation to the number of items that can be done in 1 second (which is on average 320).
@@ -799,12 +799,12 @@ To get the an optimum for the retrieval of data we need to consider that  the ti
 
 In Figure 8 gives the time it takes to ingest 16500 signal values with a 320 signal/sec depending on the number of vibex servers are called. This is in fact executing parallel requests.
 
-![Figure 8: Time depending on number of Vibex Servers](https://github.com/svandenhoven/IoTArchitecture/blob/master/images/RequiredVibexServers.PNG)
+![Figure 8: Time depending on number of Vibex Servers](https://github.com/DXNL/IoTArchitecture/blob/master/images/RequiredVibexServers.PNG)
 
 In the following tables an overview is given of the cost of Azure Function based on the sampling rate. Table 1 shows the cost optimized on duration of each job, Table 2 shows the cost optimized of the number of executions.
 
 
-![Table 1: Azure Function Cost optimized on Duration](https://github.com/svandenhoven/IoTArchitecture/blob/master/images/AzureFunctionCostOptimizedonDuration.PNG)
+![Table 1: Azure Function Cost optimized on Duration](https://github.com/DXNL/IoTArchitecture/blob/master/images/AzureFunctionCostOptimizedonDuration.PNG)
 Table 1
 
 In Table 1 can be seen that if it required that from every car in peak time (33% of 55000 = 16500) every second one signal is required, this mean that there are 52 parallel processes need to start that each will retrieve avg 320 signals per second (this is max as we saw in our tests. This will result with memory consumption of 1536 MB in a monthly cost of €2641,-. 
@@ -820,7 +820,7 @@ A more feasible solution is too lower the sampling rate to once per 10 seconds. 
 
 If the optimization is not done on duration but of number of execution this will be the estimate:
 
-![Table 2: Azure Function Cost optimized on number executions](https://github.com/svandenhoven/IoTArchitecture/blob/master/images/AzureFunctionCostOptimizedonExecutions.PNG)
+![Table 2: Azure Function Cost optimized on number executions](https://github.com/DXNL/IoTArchitecture/blob/master/images/AzureFunctionCostOptimizedonExecutions.PNG)
 Table 2
 
 We see that with 7 Vibex servers the request time is also 7 seconds. With The estimate cost to have 1 signal every second is much lower that in previous table. But this is not possible at it would take more that 1 second (7 sec with 7 vibex) to perform the task. 
@@ -877,7 +877,7 @@ The eventhub is billled on two dimenions:
 
 In the below table 3 the calculation for the price for the cars is given for 1 signal per second.
 
-![Table 3: EventHubCost 1 per sec](https://github.com/svandenhoven/IoTArchitecture/blob/master/images/EventHubCost 1 per sec.PNG)
+![Table 3: EventHubCost 1 per sec](https://github.com/DXNL/IoTArchitecture/blob/master/images/EventHubCost 1 per sec.PNG)
 Table 3: EventHubCost 1 per sec
 
 In the table 3 can be seen that with 1 event . second and with a payload (size of signal message) the number of messages per month is 25,272 millon. This is calculated with 6 hours peak and 18 hour normal car usage.
@@ -885,14 +885,14 @@ This results in a number of MB/Sec of 1.8. This means that we need 3 Ingress Thr
 
 As we have seen in the Azure Functions description, it will be hard have 1 signal per second and it is more likely to have 1 signal per 10 second to allow the retrieval and processing into eventhub. This results into the following Table 4:
 
-![Table 4: EventHubCost 1 per 10 sec](https://github.com/svandenhoven/IoTArchitecture/blob/master/images/EventHubCost 1 per 10 sec.PNG)
+![Table 4: EventHubCost 1 per 10 sec](https://github.com/DXNL/IoTArchitecture/blob/master/images/EventHubCost 1 per 10 sec.PNG)
 Table 4: EventHubCost 1 per 10 sec
 
 This will result in a lower number of messages (2,527 million per month) and lower price ofcours and with 1 signal per 10 second the total price will be € 87,-.
 
 ###Storage Cost###
 Next tot the processing also the storage of the data introduces some cost. For the calcuation we use the following constants as shown in table 4:
-![Table 4: Storage Cost constants](https://github.com/svandenhoven/IoTArchitecture/blob/master/images/CostConstants.PNG)
+![Table 4: Storage Cost constants](https://github.com/DXNL/IoTArchitecture/blob/master/images/CostConstants.PNG)
 Table 4: Storage Cost constants
 
 This table 4 shows that per month there will be 2.57 TB of data will be produced. The cost for storage has 3 parts:
@@ -915,7 +915,7 @@ Storage Cost Year >3: 	€ 847,-
 
 THe cost per month for retrieving 1 signal per 10 seconds per car is shown in table 5.
 
-![Table 5: Storage Cost 1 per 10 sec](https://github.com/svandenhoven/IoTArchitecture/blob/master/images/Storagecost 1 per 10 sec.PNG)
+![Table 5: Storage Cost 1 per 10 sec](https://github.com/DXNL/IoTArchitecture/blob/master/images/Storagecost 1 per 10 sec.PNG)
 Table 5: Storage Cost 1 per 10 sec
 
 
